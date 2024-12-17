@@ -70,12 +70,13 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          cd .. # 非常重要：切换到仓库根目录
+          cd $GITHUB_WORKSPACE # 确保我们在仓库根目录
           git add build/*
-          if ! git diff --cached --exit-code; then
+          if git diff --cached --exit-code; then
             echo "No changes to commit"
           else
             git commit -m "Update DLCS builds"
-            git push origin master
+            git push origin HEAD
           fi
+
           
