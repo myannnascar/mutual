@@ -16,14 +16,14 @@ jobs:
       - name: Prepare environment
         run: |
           sudo apt-get update
-          sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget
+          sudo apt install build-essential clang flex bison g++ gawk gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip zlib1g-dev file wget zstd
           sudo timedatectl set-timezone "Asia/Shanghai"
           sudo apt-get clean
           
       - name: Download OpenWrt SDK
         run: |
           wget https://downloads.openwrt.org/releases/24.10.0-rc2/targets/x86/64/openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-          tar --zstd openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst 
+          tar -I zstd -xf openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst 
           mv openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64 sdk
           
       - name: Add custom feeds
@@ -36,8 +36,10 @@ jobs:
       - name: Configure OpenWrt
         run: |
           cd sdk
+          cp .config .config.old
+          ./scripts/diffconfig.sh .config.old > .config
           make defconfig
-          ./scripts/config/conf -efiles .config
+          ./scripts/config/conf .config
 
       - name: Compile DLCS
         run: |
