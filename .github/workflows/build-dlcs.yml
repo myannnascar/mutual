@@ -59,4 +59,16 @@ jobs:
           cd sdk
           mkdir -p ../build 
           rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* ../build/
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+          git add build/* # 添加 build 目录下的所有文件
+          if ! git diff --cached --exit-code; then # 检查是否有更改
+            echo "No changes to commit"
+          else
+            git commit -m "Update DLCS builds"
+            git push origin master # 推送到 master 分支
+          fi
           
