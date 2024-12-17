@@ -53,10 +53,10 @@ jobs:
             echo "Building $plugin ..."
             make package/feeds/myan/$plugin/compile V=s || echo "Failed to build $plugin"
           done
-            
-      - name: Upload
-        uses: actions/upload-artifact@v3
-        with:
-          name: dlcs-binaries
-          path: sdk/bin/packages/x86_64/myan/*
-        
+
+      - name: Upload to build directory
+        run: |
+          cd sdk
+          mkdir -p ../build 
+          rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* ../build/
+          
