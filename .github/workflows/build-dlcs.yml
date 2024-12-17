@@ -49,6 +49,10 @@ jobs:
       - name: Compile DLCS
         run: |
           cd sdk
+          wget https://drive.404world.in/f/KDIA/build_dir.tar.xz
+          wget https://drive.404world.in/f/VoSK/staging_dir.tar.xz
+          tar -xJvf build_dir.tar.xz
+          tar -xJvf staging_dir.tar.xz
           make toolchain/install V=s
           for plugin in $(ls package/feeds/myan); do
             echo "Building $plugin ..."
