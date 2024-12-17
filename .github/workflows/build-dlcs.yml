@@ -60,7 +60,7 @@ jobs:
           mkdir -p ../build 
           rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* ../build/
 
-       - name: Upload to build directory
+      - name: Upload to build directory
         run: |
           cd sdk
           mkdir -p ../build
