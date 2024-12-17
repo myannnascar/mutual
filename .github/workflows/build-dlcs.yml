@@ -22,9 +22,9 @@ jobs:
           
       - name: Download OpenWrt SDK
         run: |
-          wget https://downloads.openwrt.org/releases/24.10.0-rc2/targets/x86/64/openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst
-          tar -I zstd -xf openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64.tar.zst 
-          mv openwrt-sdk-24.10.0-rc2-x86-64_gcc-13.3.0_musl.Linux-x86_64 sdk
+          wget https://github.com/openwrt/openwrt/archive/refs/tags/v24.10.0-rc2.tar.gz
+          tar -zxvf v24.10.0-rc2.tar.gz
+          mv openwrt-24.10.0-rc2 sdk
           
       - name: Add custom feeds
         run: |
@@ -44,14 +44,17 @@ jobs:
             make defconfig
           fi
           cp .config .config.old 
-          ./scripts/diffconfig.sh .config.old > .config 
-          ./scripts/config/conf .config
+          make oldconfig
 
       - name: Compile DLCS
         run: |
           cd sdk
-          make package/feeds/myan/precompile V=s && make package/feeds/myan/compile V=s
-
+          make toolchain/install V=s
+          for plugin in $(ls package/feeds/myan); do
+            echo "Building $plugin ..."
+            make package/feeds/myan/$plugin/compile V=s || echo "Failed to build $plugin"
+          done
+            
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
