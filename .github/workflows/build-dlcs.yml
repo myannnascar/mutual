@@ -36,15 +36,15 @@ jobs:
       - name: Configure OpenWrt
         run: |
           cd sdk
-          if [ -f ../.config ]; then # 检查 .config 是否存在
+          if [ -f ../.config ]; then 
             echo "Found .config in repository, copying..."
-            cp ../.config .config # 从仓库根目录复制 .config
+            cp ../.config .config 
           else
             echo ".config not found in repository, running 'make defconfig'..."
             make defconfig
           fi
-          cp .config .config.old #备份config
-          ./scripts/diffconfig .config.old > .config #diff config，使config文件更简洁
+          cp .config .config.old 
+          ./scripts/diffconfig.sh .config.old > .config 
           ./scripts/config/conf .config
 
       - name: Compile DLCS
