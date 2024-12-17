@@ -72,13 +72,24 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
-          cd $GITHUB_WORKSPACE # 确保我们在仓库根目录
+    
+          # 确保我们在仓库根目录
+          cd $GITHUB_WORKSPACE
+
+          # 删除 build 目录中的所有文件（从 Git 中删除，保留文件在工作区）
+          git rm -r --cached build/
+    
+          # 把新编译的文件复制到 build 目录
+          mkdir -p build
+          rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* build/
+
+          # 检查是否有变化
           git add build/*
           if git diff --cached --exit-code; then
             echo "No changes to commit"
           else
             git commit -m "Update DLCS builds"
-            git push https://github.com/${{ github.repository }}.git HEAD:master # 使用GitHub Actions令牌推送
+            git push origin HEAD:master
           fi
 
 
