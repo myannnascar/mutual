@@ -76,7 +76,8 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Update DLCS builds"
-            git push origin HEAD
+            git push https://github.com/${{ github.repository }}.git HEAD:master # 使用GitHub Actions令牌推送
           fi
+
 
           
