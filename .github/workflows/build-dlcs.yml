@@ -56,19 +56,7 @@ jobs:
             make package/feeds/myan/$plugin/compile V=s || echo "Failed to build $plugin"
           done
 
-      - name: Upload to build directory
-        run: |
-          cd sdk
-          mkdir -p ../build 
-          rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* ../build/
-
-      - name: Upload to build directory
-        run: |
-          cd sdk
-          mkdir -p ../build
-          rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* ../build/
-          
-      - name: Commit and push changes
+      - name: Sync build directory and commit changes
         run: |
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
@@ -76,14 +64,12 @@ jobs:
           # 确保我们在仓库根目录
           cd $GITHUB_WORKSPACE
 
-           # 删除 build 目录中的所有文件（从 Git 中删除，保留文件在工作区）
-          git rm -r --cached build/
-    
-          # 把新编译的文件复制到 build 目录
+          # 删除旧的 build 目录并同步新文件
+          rm -rf build/
           mkdir -p build
           rsync -avz --delete --exclude='*.o' sdk/bin/packages/x86_64/myan/* build/
 
-          # 检查是否有变化
+          # 检查是否有变化并提交
           git add build/*
           if git diff --cached --exit-code; then
             echo "No changes to commit"
@@ -91,4 +77,4 @@ jobs:
             git commit -m "Update DLCS builds"
             git push origin HEAD:master
           fi
-
+          
