@@ -81,7 +81,7 @@ jobs:
     
           # 把新编译的文件复制到 build 目录
           mkdir -p build
-          rsync -avz --delete --exclude='*.o' bin/packages/x86_64/myan/* build/
+          rsync -avz --delete --exclude='*.o' sdk/bin/packages/x86_64/myan/* build/
 
           # 检查是否有变化
           git add build/*
