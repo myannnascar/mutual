@@ -76,16 +76,11 @@ jobs:
           # 确保我们在仓库根目录
           cd $GITHUB_WORKSPACE
 
-          # 确保 build 目录已被 Git 跟踪
-          if [ ! -d "build" ]; then
-            mkdir build
-            git add build
-          fi
-
-          # 删除 build 目录中的所有文件（从 Git 中删除，保留文件在工作区）
+           # 删除 build 目录中的所有文件（从 Git 中删除，保留文件在工作区）
           git rm -r --cached build/
-
+    
           # 把新编译的文件复制到 build 目录
+          mkdir -p build
           rsync -avz --delete --exclude='*.o' sdk/bin/packages/x86_64/myan/* build/
 
           # 检查是否有变化
