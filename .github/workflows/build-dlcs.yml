@@ -6,7 +6,8 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch: #
-  
+  schedule:
+    - cron: '0 */8 * * *'
 jobs:
   build:
     runs-on: ubuntu-22.04
@@ -61,7 +62,7 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git config --global user.email "actions@github.com"
 
-          # 确保我们在仓库根目录
+          # 确保在仓库根目录
           cd $GITHUB_WORKSPACE
 
           # 删除旧的 build 目录并同步新文件
